@@ -13,16 +13,16 @@ app.get('/', (req, res) => {
 app.get('/products', async (req, res) => {
     const limit = req.query.limit;
     const productos = await productManager.getProducts();
-    if(limit && limit < productos.length) return res.send({status: "success", productos: productos.slice(0,limit)});
-    res.send({status: "success", productos});
+    if(limit>0 && limit < productos.length) return res.json({status: "success", productos: productos.slice(0,limit)});
+    res.json({status: "success", productos});
 })
 
 app.get('/products/:pid', async (req, res)=> {
     const productos = await productManager.getProducts();
     let id = parseInt(req.params.pid);
     let buscado = productos.find(p => p.id === id);
-    if(!buscado) return res.send({error: 'producto no encontrado'});
-    res.send({status: "success", buscado});
+    if(!buscado) return res.status(404).json({status: "error", error: "producto no encontrado"});
+    res.json({status: "success", buscado});
 });
 
 app.listen(8080, ()=> console.log("Server listening on port 8080"));
