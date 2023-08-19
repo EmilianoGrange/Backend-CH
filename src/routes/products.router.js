@@ -14,9 +14,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:pid', async (req, res)=> {
-    const productos = await productManager.getProducts();
-    let id = parseInt(req.params.pid);
-    let buscado = productos.find(p => p.id === id);
+    const id = parseInt(req.params.pid);
+    let buscado = await productManager.getProductById(id);
     if(!buscado) return res.status(404).json({status: "error", error: "producto no encontrado"});
     res.json({status: "success", buscado});
 });
