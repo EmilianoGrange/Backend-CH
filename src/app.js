@@ -1,28 +1,17 @@
 import express from 'express';
 
-import ProductManager from './ProductManager.js';
+import productRouter from './routes/products.router.js';
 
-const productManager = new ProductManager('./data/productos.json');
+import cartRouter from './routes/carts.router.js';
 
 const app = express();
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send(`<h1>Server con Express</h1>`);
 })
 
-app.get('/products', async (req, res) => {
-    const limit = req.query.limit;
-    const productos = await productManager.getProducts();
-    if(limit>0 && limit < productos.length) return res.json({status: "success", productos: productos.slice(0,limit)});
-    res.json({status: "success", productos});
-})
+app.use('/api/products', productRouter);
 
-app.get('/products/:pid', async (req, res)=> {
-    const productos = await productManager.getProducts();
-    let id = parseInt(req.params.pid);
-    let buscado = productos.find(p => p.id === id);
-    if(!buscado) return res.status(404).json({status: "error", error: "producto no encontrado"});
-    res.json({status: "success", buscado});
-});
+app.use('/api/carts', cartRouter);
 
 app.listen(8080, ()=> console.log("Server listening on port 8080"));
