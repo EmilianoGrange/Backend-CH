@@ -7,14 +7,15 @@ const router = Router();
 const cartManager = new CartManager('./data/carts.json');
 
 router.post('/', async (req, res) => {
-    const cart = await cartManager.createCart();
-    console.log(cart);
+    const id = await cartManager.createCart();
+    res.json({status: "success", id});
 });
 
 router.get('/:cid', async (req, res) => {
     let id = parseInt(req.params.cid);
     const cart = await cartManager.getCartById(id);
-    console.log(cart)
+    if(!cart) return res.status(404).json({status: "error", error: "no existe ese carrito"});
+    res.json({status: "success", cart});
 });
 
 export default router;
