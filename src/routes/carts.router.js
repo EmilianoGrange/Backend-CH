@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express';
 
 import CartManager from '../CartManager.js';
 
@@ -15,7 +15,7 @@ router.get('/:cid', async (req, res) => {
     let id = parseInt(req.params.cid);
     const cart = await cartManager.getCartById(id);
     if(!cart) return res.status(404).json({status: "error", error: "no existe ese carrito"});
-    res.json({status: "success", cart});
+    res.json({status: "success", payload: cart.products});
 });
 
 export default router;

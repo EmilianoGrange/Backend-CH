@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from 'fs';
 
 class ProductManager {
     constructor(path) {
@@ -72,7 +72,9 @@ class ProductManager {
                 const index = products.findIndex(prod => prod.id === id)
                 if (index !== -1) {
                     for (const prop in obj) {
-                        products[index][prop] = obj[prop];
+                        if(prop !== 'id') {
+                            products[index][prop] = obj[prop];
+                        }
                     }
                 } else {
                     console.log(`No existe un producto con el id: ${id}`);
