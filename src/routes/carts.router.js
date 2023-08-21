@@ -29,7 +29,7 @@ router.post('/:cid/product/:pid', async (req, res) => {
     const pid = parseInt(req.params.pid);
     const buscado = await productManager.getProductById(pid);
     if(!buscado) return res.status(404).json({status: "error", error: "producto no encontrado"});
-    const index = cart.products.findIndex(p => p.id === pid);
+    const index = cart.products.findIndex(p => p.product == pid);
     (index !== -1) ? cart.products[index].quantity++ : cart.products.push({product: pid, quantity: 1});
     const updated = await cartManager.saveCart(cid, cart);
     res.json({status: "success", payload: updated});
