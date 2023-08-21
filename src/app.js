@@ -8,12 +8,14 @@ const app = express();
 
 app.use(express.json());
 
-app.get('/api', (req, res) => {
-    res.send(`<h1>Server con Express</h1>`);
-})
+app.use(express.urlencoded({extended: true}));
+
+app.use(express.static('public'));
 
 app.use('/api/products', productRouter);
 
 app.use('/api/carts', cartRouter);
 
-app.listen(8080, ()=> console.log('Server listening on port 8080'));
+const server = app.listen(8080, ()=> console.log(`Server listening on port ${server.address().port}`));
+
+server.on('error', err => console.log(`Error en el servidor ${err.message}`));

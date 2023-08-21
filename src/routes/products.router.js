@@ -22,8 +22,11 @@ router.get('/:pid', async (req, res)=> {
 
 router.post('/', async (req, res) => {
     const producto = req.body;
+    if(!producto.title || !producto.description || !producto.price || !producto.code || !producto.stock || !producto.category) {
+        return res.status(400).json({status: "error", error: "valores incompletos"});
+    }
     const id = await productManager.addProduct(producto);
-    res.json({status: "success", id});
+    res.json({status: "success", message: `producto con id ${id} creado`});
 });
 
 router.put('/:pid', async (req, res) => {
