@@ -1,5 +1,7 @@
 import express from 'express';
 
+import handlebars from 'express-handlebars';
+
 import productRouter from './routes/products.router.js';
 
 import cartRouter from './routes/carts.router.js';
@@ -10,7 +12,16 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static('public'));
+app.engine('handlebars', handlebars.engine());
+app.set('views', 'src/views');
+app.set('view engine', 'handlebars');
+
+//app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+    const user = {nombre: "Milo"}; //tengo que pasar un objeto, y renderizo alguna/s propiedad/es
+    res.render('index', user);
+});
 
 app.use('/api/products', productRouter);
 
