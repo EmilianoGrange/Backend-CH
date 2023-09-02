@@ -4,7 +4,35 @@ const table = document.querySelector('#rpTable');
 
 const form = document.querySelector('#createForm');
 
-form.addEventListener('submit', (e)=> {
+const deleteProduct = (id) => {
+    fetch(`/api/products/${id}`, {
+        method: 'delete'
+    }).then(() => {
+        Toastify({
+            text: 'Producto eliminado!',
+            duration: 2000,
+            style: {
+                background: "linear-gradient(to right, #5f2c82, #49a09d)"
+            }
+        }).showToast();
+    }).then(() => fetch('/api/products'))
+        .then(res => res.json())
+        .then(res => {
+            socket.emit('productList', res.productos);
+        }).catch((error) => {
+            console.log(error)
+        })
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const btnsDel = document.querySelectorAll(".eliminar");
+
+    btnsDel.forEach(btn => {
+        btn.addEventListener("click", () => deleteProduct(btn.id))
+    });
+});
+
+form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     body = {
@@ -22,8 +50,7 @@ form.addEventListener('submit', (e)=> {
         headers: {
             'Content-Type': 'application/json'
         }
-    }).then(res => {
-        console.log(res)
+    }).then(() => {
         Toastify({
             text: 'Producto creado!',
             duration: 2000,
@@ -31,8 +58,34 @@ form.addEventListener('submit', (e)=> {
                 background: "linear-gradient(to right, #5f2c82, #49a09d)"
             }
         }).showToast();
-    }).catch((error) => {
-        console.log(error)
-    })
+        form.reset();
+    }).then(() => fetch('/api/products'))
+        .then(res => res.json())
+        .then(res => {
+            socket.emit('productList', res.productos);
+        }).catch((error) => {
+            console.log(error)
+        })
 });
 
+socket.on('updatedProducts', data => {
+    table.innerHTML = ''
+    data.forEach(product => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${product.title}</td>
+            <td>${product.description}</td>
+            <td>${product.price}</td>
+            <td>${product.code}</td>
+            <td>${product.stock}</td>
+            <td>${product.category}</td>
+            <td><button class="btn btn-danger eliminar" id="${product.id}">Eliminar</button></td>`
+        table.appendChild(tr);
+    });
+
+    const btnsDel = document.querySelectorAll(".eliminar");
+
+    btnsDel.forEach(btn => {
+        btn.addEventListener("click", () => deleteProduct(btn.id))
+    });
+});
