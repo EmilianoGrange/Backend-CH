@@ -22,6 +22,7 @@ router.get('/:pid', async (req, res)=> {
 
 router.post('/', async (req, res) => {
     const producto = req.body;
+    console.log(producto);
     if(!producto.title || !producto.description || !producto.price || !producto.code || !producto.stock || !producto.category) {
         return res.status(400).json({status: "error", error: "valores incompletos"});
     }
